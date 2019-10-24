@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ include "docker-ui.fullname" . }}
@@ -24,6 +24,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }} 
+          env:
+{{- range $key, $val := .Values.env }}
+          - name: {{ $key }}
+            value: {{ quote $val }}
+{{- end }}
           ports:
             - name: http
               containerPort: 80
